@@ -2,23 +2,24 @@ package constants;
 
 public enum EnumTipoArticulo {
 
-	UNDEFINED(0, ""),
+	UNDEFINED(0, "", ""),
 
-	SUDADERA_BASICA(1, "Sudadera básica"),
+	SUDADERA_BASICA(1, "Sudadera básica", "sudaderaBasica"),
 
-	SUDADERA_BICOLOR(2, "Sudadera bicolor"),
+	SUDADERA_BICOLOR(2, "Sudadera bicolor", "sudaderaBicolor"),
 	
-	CAMISETA(3, "Camiseta"),
+	CAMISETA(3, "Camiseta", "camiseta"),
 	
-	GORRO(4, "Gorro"),
+	GORRO(4, "Gorro", "gorro"),
 	
-	FORRO_POLAR(5, "Forro polar"),
+	FORRO_POLAR(5, "Forro polar", "forroPolar"),
 
 	;
 
 	private int codigoNumerico;
 	private String nombre;
-
+	private String rutaColores;
+	
 	// Getters y setters
 
 	public int getCodigoNumerico() {
@@ -36,10 +37,20 @@ public enum EnumTipoArticulo {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	
+	public String getRutaColores() {
+		return rutaColores;
+	}
+
+	public void setRutaColores(String rutaColores) {
+		this.rutaColores = rutaColores;
+	}
+
 	// Constructor
-	EnumTipoArticulo(int codigoNumerico, String nombre) {
+	EnumTipoArticulo(int codigoNumerico, String nombre, String rutaColores) {
 		this.codigoNumerico = codigoNumerico;
 		this.nombre = nombre;
+		this.rutaColores = rutaColores;
 	}
 
 	// Métodos
@@ -62,6 +73,18 @@ public enum EnumTipoArticulo {
 		}
 
 		return UNDEFINED;
+	}
+	
+	public static String[] comboSeleccion() {
+		String[] valores = new String[values().length];
+		
+		int i = 0;
+		for(EnumTipoArticulo v : values()) {
+			valores[i] = v.getNombre();
+			i++;
+		}
+		
+		return valores;
 	}
 
 }

@@ -4,10 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 
 import objects.Articulo;
 import service.ConnectionService;
+import service.impl.ArticuloServiceImpl;
 
 public class VentanaArticulos {
 
@@ -158,10 +160,31 @@ public class VentanaArticulos {
 				}
 			}
 
-		};
-		tablaArticulos.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			public boolean editCellAt(int row, int column, java.util.EventObject e) {
+				return false;
+			}
 
+		};
+
+		// Doble click
+		tablaArticulos.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					JTable table = (JTable) mouseEvent.getSource();
+					Point point = mouseEvent.getPoint();
+					int row = table.rowAtPoint(point);
+					try {
+						ArticuloServiceImpl service = new ArticuloServiceImpl();
+						Articulo articuloVista = service.dameArticuloFromDobleClickEnColumna(
+								(int) tablaArticulos.getValueAt(row, 1), articulos);
+						if (articuloVista != null) {
+							VentanaDetallaEdicionArticulo ventana = new VentanaDetallaEdicionArticulo(articuloVista);
+							ventana.getFrame().setVisible(true);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 
