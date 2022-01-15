@@ -13,6 +13,7 @@ import objects.Articulo;
 /**
  * Clase con los servicios de lógica de negocio de las conexiones
  * pruebas
+ * pruebasss
  * @author Sbita
  *
  */
