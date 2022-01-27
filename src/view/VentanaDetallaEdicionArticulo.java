@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import constants.EnumColoresSudaderaConCapuchaBasica;
 import constants.EnumTipoArticulo;
 import objects.Articulo;
+import javax.swing.JButton;
 
 public class VentanaDetallaEdicionArticulo {
 
@@ -142,6 +143,14 @@ public class VentanaDetallaEdicionArticulo {
 		txtPrecio.setBounds(25, 210, 150, 25);
 		desktopPane.add(txtPrecio);
 		txtPrecio.setColumns(10);
+		
+		JButton btnGuardarArticulo = new JButton("Guardar cambios");
+		btnGuardarArticulo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnGuardarArticulo.setBounds(25, 287, 150, 23);
+		desktopPane.add(btnGuardarArticulo);
 
 	}
 

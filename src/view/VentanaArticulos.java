@@ -216,7 +216,7 @@ public class VentanaArticulos {
 	private JButton buttonAddArticulo() throws IOException {
 		JButton btnAddArticulo = new JButton();
 		Image icono = null;
-		icono = ImageIO.read(this.getClass().getResource("/resources/crear.png"));
+		icono = ImageIO.read(this.getClass().getResource("/resources/botonesListado/Crear.png"));
 		btnAddArticulo.setIcon(new ImageIcon(icono.getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
 		btnAddArticulo.setMargin(new Insets(0, 0, 0, 0));
 		btnAddArticulo.setOpaque(false);
@@ -233,7 +233,7 @@ public class VentanaArticulos {
 	private JButton buttonEditArticulo() throws IOException {
 		JButton btnEditArt = new JButton("");
 		Image icono = null;
-		icono = ImageIO.read(this.getClass().getResource("/resources/edit.png"));
+		icono = ImageIO.read(this.getClass().getResource("/resources/botonesListado/Actualizar.png"));
 		btnEditArt.setIcon(new ImageIcon(icono.getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
 		btnEditArt.setMargin(new Insets(0, 0, 0, 0));
 		btnEditArt.setOpaque(false);
@@ -260,7 +260,7 @@ public class VentanaArticulos {
 			}
 		});
 		Image icono = null;
-		icono = ImageIO.read(this.getClass().getResource("/resources/remove.png"));
+		icono = ImageIO.read(this.getClass().getResource("/resources/botonesListado/Eliminar.png"));
 		btnDeleteArticulo.setIcon(new ImageIcon(icono.getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
 		btnDeleteArticulo.setMargin(new Insets(0, 0, 0, 0));
 		btnDeleteArticulo.setOpaque(false);

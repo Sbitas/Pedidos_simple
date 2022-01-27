@@ -1,17 +1,20 @@
 package view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import java.awt.Color;
-import java.awt.Toolkit;
-import javax.swing.JDesktopPane;
 import java.awt.BorderLayout;
-import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+
+import objects.Pedido;
 
 public class VentanaPrincipal {
 
@@ -70,10 +73,31 @@ public class VentanaPrincipal {
 		
 		JButton btnPedidos = new JButton("Pedidos");
 		btnPedidos.setBounds(45, 90, 89, 23);
+		btnPedidos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					VentanaListadoPedidos window = new VentanaListadoPedidos(new Pedido());
+					window.getFrame().setVisible(true);
+				} catch (SQLException | IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		panelPrincipal.add(btnPedidos);
 		
 		JButton btnClientes = new JButton("Clientes");
 		btnClientes.setBounds(45, 150, 89, 23);
+		btnClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					VentanaListadoClientes window = new VentanaListadoClientes();
+					window.getFrame().setVisible(true);
+				} catch (IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		panelPrincipal.add(btnClientes);
 		
 		JButton btnNewButton = new JButton("New button");

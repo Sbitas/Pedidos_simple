@@ -2,6 +2,7 @@ package objects;
 
 import java.math.BigDecimal;
 
+import annotation.Tabla;
 import constants.EnumTipoArticulo;
 
 /**
@@ -11,6 +12,7 @@ import constants.EnumTipoArticulo;
  *
  */
 @SuppressWarnings("rawtypes")
+@Tabla(nombreTabla = "articulos")
 public class Articulo {
 
 	/**
