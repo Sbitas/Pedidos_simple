@@ -6,8 +6,8 @@ import service.IPedidoService;
 
 public class PedidoServiceImpl extends BaseService<Pedido> implements IPedidoService {
 
-	public PedidoServiceImpl(Pedido entidad) {
-		super(entidad);
+	public PedidoServiceImpl() {
+		super(new Pedido());
 	}
 
 }

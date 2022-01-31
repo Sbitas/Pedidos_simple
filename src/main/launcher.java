@@ -1,11 +1,22 @@
 package main;
 
+import java.awt.EventQueue;
+
+import view.VentanaPrincipal;
+
 public class launcher {
 
 	public static void main(String[] args) {
-		// Launcher de la vista
-		
-
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					VentanaPrincipal window = new VentanaPrincipal();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 }

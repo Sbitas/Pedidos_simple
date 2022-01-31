@@ -15,26 +15,12 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 
 import objects.Pedido;
+import view.listados.VentanaListadoClientes;
+import view.listados.VentanaListadoPedidos;
 
 public class VentanaPrincipal {
 
-	private JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaPrincipal window = new VentanaPrincipal();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	public JFrame frame;
 
 	/**
 	 * Create the application.
@@ -78,7 +64,7 @@ public class VentanaPrincipal {
 				try {
 					VentanaListadoPedidos window = new VentanaListadoPedidos(new Pedido());
 					window.getFrame().setVisible(true);
-				} catch (SQLException | IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e1) {
+				} catch (IllegalArgumentException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -93,7 +79,7 @@ public class VentanaPrincipal {
 				try {
 					VentanaListadoClientes window = new VentanaListadoClientes();
 					window.getFrame().setVisible(true);
-				} catch (IOException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException | SQLException e1) {
+				} catch ( IllegalArgumentException e1) {
 					e1.printStackTrace();
 				}
 			}

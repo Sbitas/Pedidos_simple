@@ -10,7 +10,7 @@ public class DbConnection {
 	
 	String url = "jdbc:mysql://localhost:3306/pedidos_simple";
 	String uName = "root";
-	String uPassword = "password";
+	String uPassword = "";
 	Connection connection;
 	Statement statement;
 	

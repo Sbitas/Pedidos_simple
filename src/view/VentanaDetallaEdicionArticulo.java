@@ -58,7 +58,7 @@ public class VentanaDetallaEdicionArticulo {
 	private void initialize(Articulo articulo) throws IOException {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 550, 375);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		desktopPane = new JDesktopPane();
 		frame.getContentPane().add(desktopPane, BorderLayout.CENTER);
@@ -165,7 +165,7 @@ public class VentanaDetallaEdicionArticulo {
 	public String dameRutaImagen(EnumTipoArticulo tipo, Enum color) {
 
 		StringBuilder ruta = new StringBuilder("");
-		if (tipo != null && tipo != EnumTipoArticulo.UNDEFINED && color != null
+		if (tipo != null && color != null
 				&& color != EnumColoresSudaderaConCapuchaBasica.UNDEFINED) {
 
 			ruta.append("/resources/colors/");

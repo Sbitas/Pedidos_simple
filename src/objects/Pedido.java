@@ -7,25 +7,25 @@ import constants.EnumEstadoPedido;
 
 @Tabla(nombreTabla = "pedidos", numeroCampos = 4, nombreFrame = "PEDIDOS")
 public class Pedido extends ObjetoBase {
-
-	private Cliente cliente;
+	
+	private int clienteId;
 
 	private BigDecimal precioPedido;
 
 	private EnumEstadoPedido estadoPedido;
-
+	
 	// GETTERS Y SETTERS
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
 
 	public BigDecimal getPrecioPedido() {
 		return precioPedido;
+	}
+
+	public int getClienteId() {
+		return clienteId;
+	}
+
+	public void setClienteId(int clienteId) {
+		this.clienteId = clienteId;
 	}
 
 	public void setPrecioPedido(BigDecimal precioPedido) {

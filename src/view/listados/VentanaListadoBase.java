@@ -1,6 +1,9 @@
-package view;
+package view.listados;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,9 +20,14 @@ import javax.swing.table.DefaultTableModel;
 import annotation.Tabla;
 import objects.ObjetoBase;
 import service.BaseService;
-import service.ConnectionService;
+import view.VentanaBase;
+import view.detalle.VentanaDetalleBase;
+import view.detalle.VentanaDetallePedido;
+import view.menu.MenuListadoSuperior;
+import view.menu.MenusListadosBase;
 
-public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends BaseService<T>> {
+public abstract class VentanaListadoBase<T extends ObjetoBase, ISERVICE extends BaseService<T>, VENTANA_DETALLE extends VentanaDetalleBase<T, ISERVICE>>
+		extends VentanaBase<T, ISERVICE> {
 
 	// Propiedades de los listados
 
@@ -96,16 +103,18 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 		this.allSelected = allSelected;
 	}
 
-	public ventanaListadoBase(T entidad) throws IOException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, InstantiationException, SQLException {
+	public VentanaListadoBase(T entidad) {
 		initialize(entidad);
 	}
 
-	public void initialize(T entidad) throws IOException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, InstantiationException, SQLException {
-		ConnectionService conn = new ConnectionService();
+	public void initialize(T entidad) {
 
-		this.frameBase(entidad);
+		try {
+			this.frameBase(entidad);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException
+				| NoSuchMethodException | SecurityException | IOException | SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -118,16 +127,18 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 	 * @throws InvocationTargetException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
 	 */
 	public void frameBase(T entidad) throws IOException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, InstantiationException, SQLException {
+			InvocationTargetException, InstantiationException, SQLException, NoSuchMethodException, SecurityException {
 		frame = new JFrame();
 		frame.setTitle(entidad.getClass().getAnnotation(Tabla.class).nombreFrame());
 		frame.setBounds(100, 100, 580, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		frame.setJMenuBar(new MenusListadosBase<T>().bar);
-
+//		frame.setJMenuBar(new MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE>().bar);
+		frame.setJMenuBar(new MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE>(this.obtieneClaseObjeto(), this.obtieneClaseService(), this.obtieneVentanaDetalle()).bar);
 		JScrollPane panelPrincipal = new JScrollPane();
 		panelPrincipal.setBounds(100, 100, 582, 300);
 		frame.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
@@ -147,17 +158,19 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
 	 */
 	public void objetosTablaEntidad() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, SQLException, InstantiationException {
+			InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException, SecurityException {
 
 		List<T> listaElementos = this.cargaListadoObjetos();
 
 		if (listaElementos.size() > 0) {
 			int numCols = listaElementos.get(0).getClass().getAnnotation(Tabla.class).numeroCampos();
-			objetosTabla = new Object[listaElementos.size()][numCols+1];
-			titulosColumnas = new String[numCols+1] ;
-			
+			objetosTabla = new Object[listaElementos.size()][numCols + 1];
+			titulosColumnas = new String[numCols + 1];
+
 			for (int i = 0; i < objetosTabla.length; i++) {
 				objetosTabla[i][0] = false;
 				titulosColumnas[0] = "";
@@ -165,20 +178,20 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 				List<Method> getters = this.filtraGetters(this.dameListaPropiedades(listaElementos.get(i)),
 						this.dameGettersT(listaElementos.get(i)));
 
-				objetosTabla[i][1] = this.dameSetterPorNombrePropiedad("Id", getters).invoke(listaElementos.get(i));
+				objetosTabla[i][1] = this.dameGetterPorNombrePropiedad("Id", getters).invoke(listaElementos.get(i));
 				titulosColumnas[1] = "ID";
 
 				for (int j = 0; j < numCols; j++) {
 					if (!getters.get(j).getName().equals("getId")) {
-						objetosTabla[i][j+2] = getters.get(j).invoke(listaElementos.get(i));
-						titulosColumnas[j+2] = getters.get(j).getName().substring(3);
+						objetosTabla[i][j + 2] = getters.get(j).invoke(listaElementos.get(i));
+						titulosColumnas[j + 2] = getters.get(j).getName().substring(3);
 					}
 				}
 
 			}
 		}
 	}
-	
+
 	/**
 	 * Construye el JTable
 	 */
@@ -204,24 +217,33 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 				return false;
 			}
 		};
-		
+
+		tabla.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					JTable table = (JTable) mouseEvent.getSource();
+					Point point = mouseEvent.getPoint();
+					int row = table.rowAtPoint(point);
+
+					try {
+
+						Class<VENTANA_DETALLE> vDetalleClass = obtieneVentanaDetalle();
+						VENTANA_DETALLE v = vDetalleClass.newInstance();
+						v.initialize(dameEntidadPorIdFila((int) tabla.getValueAt(row, 1)));
+						v.getFrame().setVisible(true);
+
+					} catch (IOException | InstantiationException | IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException | NoSuchMethodException | SecurityException | SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
 		tabla.setRowSelectionAllowed(false);
 	}
 
 	// AXUILIARES
-
-	@SuppressWarnings("deprecation")
-	public List<T> cargaListadoObjetos() throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, SQLException, InstantiationException {
-		return ((Class<ISERVICE>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1])
-				.newInstance().consultaListado();
-	}
-
-	public Method dameSetterPorNombrePropiedad(String nombrePropiedad, List<Method> metodos)
-			throws InstantiationException, IllegalAccessException {
-		return ((Class<ISERVICE>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1])
-				.newInstance().dameGetterPorNombreColumna(nombrePropiedad, metodos);
-	}
 
 	/**
 	 * Obtiene todos los getters de la entidad
@@ -267,6 +289,40 @@ public abstract class ventanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 		}
 
 		return gettersFiltrados;
+	}
+
+	/**
+	 * Obtiene la clase de la vista de la entana de detalle
+	 * 
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public Class<VENTANA_DETALLE> obtieneVentanaDetalle() throws InstantiationException, IllegalAccessException {
+		return ((Class<VENTANA_DETALLE>) ((ParameterizedType) getClass().getGenericSuperclass())
+				.getActualTypeArguments()[2]);
+	}
+
+	/**
+	 * Obtiene la clase de la vista de la entana de detalle
+	 * 
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public Class<T> obtieneClaseObjeto() throws InstantiationException, IllegalAccessException {
+		return ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+	}
+
+	/**
+	 * Obtiene la clase de la vista de la entana de detalle
+	 * 
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public Class<ISERVICE> obtieneClaseService() throws InstantiationException, IllegalAccessException {
+		return ((Class<ISERVICE>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]);
 	}
 
 }

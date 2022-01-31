@@ -2,8 +2,6 @@ package constants;
 
 public enum EnumTipoArticulo {
 
-	UNDEFINED(0, "", ""),
-
 	SUDADERA_BASICA(1, "Sudadera básica", "sudaderaBasica"),
 
 	SUDADERA_BICOLOR(2, "Sudadera bicolor", "sudaderaBicolor"),
@@ -72,7 +70,7 @@ public enum EnumTipoArticulo {
 			}
 		}
 
-		return UNDEFINED;
+		return null;
 	}
 	
 	public static String[] comboSeleccion() {
