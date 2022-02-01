@@ -2,6 +2,8 @@ package view.listados;
 
 import java.awt.BorderLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -104,6 +106,8 @@ public abstract class VentanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 	}
 
 	public VentanaListadoBase(T entidad) {
+		this.idsSeleccionados = new ArrayList<Integer>();
+		this.allSelected = false;
 		initialize(entidad);
 	}
 
@@ -137,8 +141,12 @@ public abstract class VentanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 		frame.setBounds(100, 100, 580, 300);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-//		frame.setJMenuBar(new MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE>().bar);
-		frame.setJMenuBar(new MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE>(this.obtieneClaseObjeto(), this.obtieneClaseService(), this.obtieneVentanaDetalle()).bar);
+		MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE> menu = new MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE>(
+				this.obtieneClaseObjeto(), this.obtieneClaseService(), this.obtieneVentanaDetalle());
+
+		this.actionListenersMenu(menu);
+
+		frame.setJMenuBar(menu.bar);
 		JScrollPane panelPrincipal = new JScrollPane();
 		panelPrincipal.setBounds(100, 100, 582, 300);
 		frame.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
@@ -213,8 +221,9 @@ public abstract class VentanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 				}
 			}
 
-			public boolean editCellAt(int row, int column, java.util.EventObject e) {
-				return false;
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return column == 0;
 			}
 		};
 
@@ -323,6 +332,55 @@ public abstract class VentanaListadoBase<T extends ObjetoBase, ISERVICE extends 
 	 */
 	public Class<ISERVICE> obtieneClaseService() throws InstantiationException, IllegalAccessException {
 		return ((Class<ISERVICE>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]);
+	}
+
+	/**
+	 * Método que actualiza el menu para settear las acciones de los botones que no
+	 * podemos hacer desde el propio menú
+	 * 
+	 * @param base
+	 */
+	public void actionListenersMenu(MenuListadoSuperior<T, ISERVICE, VENTANA_DETALLE> base) {
+		
+		// Primero el de seleccionar todos
+		base.selectAll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				allSelected = !allSelected;
+
+				for (int i = 0; i < objetosTabla.length; i++) {
+					tabla.setValueAt(allSelected, i, 0);
+
+					if (allSelected) {
+						idsSeleccionados.add((Integer) objetosTabla[i][1]);
+					} else {
+						idsSeleccionados.remove((Integer) objetosTabla[i][1]);
+					}
+				}
+			}
+		});
+		
+		// Ahora el de editar, que tiene que comprobar que solo se puede editar uno, por ahora
+		base.edit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		// Ahora el de eliminar, que si hay más de uno muestra un mensaje por pantalla
+		base.delete.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 }

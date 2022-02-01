@@ -23,8 +23,9 @@ public class VentanaDetalleBase<T extends ObjetoBase, ISERVICE extends BaseServi
 		extends VentanaBase<T, ISERVICE> {
 
 	private JDesktopPane desktopPane;
+	
 	private JFrame frame;
-
+	
 	public JFrame getFrame() {
 		return frame;
 	}

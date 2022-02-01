@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -20,23 +22,42 @@ import service.BaseService;
 import view.detalle.VentanaDetalleBase;
 
 public abstract class MenusListadosBase<T extends ObjetoBase, ISERVICE extends BaseService<T>, VENTANA_DETALLE extends VentanaDetalleBase<T, ISERVICE>> {
+
 	public JMenuBar bar;
+
 	public T objeto;
+
 	public VENTANA_DETALLE vDet;
+
+	public JButton botonAdd;
+
+	public JCheckBox selectAll;
+
+	public JButton edit;
+
+	public JButton delete;
 
 	public MenusListadosBase() throws IOException {
 		this.bar = new JMenuBar();
-
-		bar.add(this.botonSelectAll());
-		bar.add(this.botonAdd());
-		bar.add(this.botonEditSelected());
-		bar.add(this.botonDelete());
-
 	}
 
 	public MenusListadosBase(Class<T> claseObjeto, Class<ISERVICE> claseService, Class<VENTANA_DETALLE> claseDetalle)
 			throws IOException {
+
 		this.bar = new JMenuBar();
+
+		this.selectAll = this.botonSelectAll();
+		this.bar.add(selectAll);
+		
+		this.botonAdd = this.botonAdd();
+		this.bar.add(botonAdd);
+
+		this.edit = this.botonEditSelected();
+		this.bar.add(edit);
+
+		this.delete = this.botonDelete();
+		this.bar.add(delete);
+
 		try {
 			this.objeto = claseObjeto.newInstance();
 			this.vDet = claseDetalle.newInstance();
@@ -45,10 +66,6 @@ public abstract class MenusListadosBase<T extends ObjetoBase, ISERVICE extends B
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		bar.add(this.botonSelectAll());
-		bar.add(this.botonAdd());
-		bar.add(this.botonEditSelected());
-		bar.add(this.botonDelete());
 
 	}
 
@@ -60,13 +77,6 @@ public abstract class MenusListadosBase<T extends ObjetoBase, ISERVICE extends B
 	 */
 	public JCheckBox botonSelectAll() throws IOException {
 		JCheckBox checkBox = new JCheckBox();
-
-		checkBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO accion de seleccionar todos
-			}
-		});
-
 		return checkBox;
 	}
 
@@ -91,11 +101,9 @@ public abstract class MenusListadosBase<T extends ObjetoBase, ISERVICE extends B
 					vDet.getFrame().setVisible(true);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException | IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
-				// TODO accion de agregar elemento al listado
 			}
 		});
 		return boton;
@@ -180,5 +188,18 @@ public abstract class MenusListadosBase<T extends ObjetoBase, ISERVICE extends B
 	 */
 	public Class<T> obtieneClaseObjetoBase() throws InstantiationException, IllegalAccessException {
 		return ((Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+	}
+
+	/**
+	 * Método que obtiene una lista de los ids correspondientes de las entidades
+	 * correspondientes a las filas seleccionadas
+	 * 
+	 * @return listaIds
+	 */
+	public List<Integer> dameIdEntidadesPorFilasSeleccionadas() {
+		ArrayList<Integer> listaIdsSeleccionados = new ArrayList<Integer>();
+
+		return listaIdsSeleccionados;
+
 	}
 }
